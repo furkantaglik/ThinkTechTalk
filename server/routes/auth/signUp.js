@@ -13,7 +13,7 @@ const UserSchema = z.object({
   email: z.string().email("Geçersiz email formatı"),
   username: z
     .string()
-    .min(3, "kullanıcı adı minimum 3 karakter olabilir")
+    .min(3, "kullanıcı adı minimum 4 karakter olabilir")
     .max(18, "kullanıcı adı maksimum 18 karakter olabilir")
     .transform((username) => username.trim().toLowerCase()),
   password: z.string().min(5, "şifre en az 5 karakter olabilir"),
