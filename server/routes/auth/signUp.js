@@ -1,23 +1,27 @@
 import crypto from "crypto-js";
-import z from "zod";
+import jwt from "jsonwebtoken";
+import db from "../../prisma/prisma.js";
+import { UserSchema } from "../../helpers/zodschema/schemas.js";
 
-const UserSchema = z.object({
-  firstName: z
-    .string()
-    .min(3, "isim minimum 3 karakter olabilir")
-    .max(18, "isim maksimum 18 karakter olabilir"),
-  lastName: z
-    .string()
-    .min(3, "soyisim minimum 3 karakter olabilir")
-    .max(18, "soyisim maksimum 18 karakter olabilir"),
-  email: z.string().email("Geçersiz email formatı"),
-  username: z
-    .string()
-    .min(3, "kullanıcı adı minimum 3 karakter olabilir")
-    .max(18, "kullanıcı adı maksimum 18 karakter olabilir")
-    .transform((username) => username.trim().toLowerCase()),
-  password: z.string().min(5, "şifre en az 5 karakter olabilir"),
-});
+const generatePassHash = (password) => {
+  const key = process.env.PASS_SECRET_KEY;
+  return crypto.AES.encrypt(password, key).toString();
+};
+
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.TOKEN_SECRET_KEY, {
+    expiresIn: "5h",
+  });
+};
+
+const verifyUser = async (username, email) => {
+  const existingUser = await db.user.findFirst({
+    where: {
+      OR: [{ email }, { username }],
+    },
+  });
+  return existingUser ? true : false;
+};
 
 export const signUp = async (req, res) => {
   const { firstName, lastName, email, username, password } = req.body;
@@ -28,26 +32,24 @@ export const signUp = async (req, res) => {
     username,
     password,
   });
+  try {
+    if (!user.success) {
+      return res.status(200).json({ message: user.error.issues[0].message });
+    }
 
-  if (!user.success) {
-    return res.status(200).json(user.error.issues[0].message);
+    if (await verifyUser(username, email)) {
+      return res.status(400).json({ message: "Kullanıcı zaten mevcut" });
+    }
+
+    const hashedPassword = generatePassHash(password);
+    const createdUser = await db.user.create({
+      data: { firstName, lastName, email, username, password: hashedPassword },
+    });
+
+    const token = generateToken(createdUser.id);
+    return res.status(200).json({ message: "Hesabınız oluşturuldu", token });
+  } catch (error) {
+    console.error("Kullanıcı oluşturma hatası:", error);
+    return res.status(500).json({ message: "Sunucu hatası" });
   }
-
-  generatePassHash(password);
-  function generatePassHash(password) {
-    const key = process.env.PASS_SECRET_KEY;
-    const hashedPass = crypto.AES.encrypt(password, key).toString();
-    const decryptPass = crypto.AES.decrypt(hashedPass, key).toString(
-      crypto.enc.Utf8
-    );
-
-    console.log("hash", hashedPass);
-    console.log("normal", decryptPass);
-  }
-
-  function verifyUser(username, email) {}
-  function generateToken() {}
-  function createUser() {}
-
-  return res.json(user.data);
 };

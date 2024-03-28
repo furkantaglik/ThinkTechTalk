@@ -6,9 +6,9 @@ import dotenv from "dotenv";
 import { signUp } from "./routes/auth/signUp.js";
 
 const app = express();
-dotenv.config();
-app.use(cors());
 app.use(express.json());
+app.use(cors());
+dotenv.config();
 
 app.get("/", (req, res) => {
   res.json("Welcome");
