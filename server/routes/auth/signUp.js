@@ -46,10 +46,10 @@ export const signUp = async (req, res) => {
       data: { firstName, lastName, email, username, password: hashedPassword },
     });
 
-    const token = generateToken(createdUser.id);
+    const token = generateToken(createdUser.uuid);
     return res.status(200).json({ message: "Hesabınız oluşturuldu", token });
   } catch (error) {
-    console.error("Kullanıcı oluşturma hatası:", error);
+    console.error("Kullanıcı oluşturma hatası:", error.message);
     return res.status(500).json({ message: "Sunucu hatası" });
   }
 };

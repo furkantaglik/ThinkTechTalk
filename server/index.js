@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 //routes
 import { signUp } from "./routes/auth/signUp.js";
+import { signIn } from "./routes/auth/signIn.js";
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/auth/signup", signUp);
+app.post("/api/auth/signin", signIn);
 
 app.listen(5000, () => {
   console.log(`http://localhost:5000`);
