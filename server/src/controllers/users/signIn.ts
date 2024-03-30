@@ -1,21 +1,22 @@
 import crypto from "crypto-js";
 import jwt from "jsonwebtoken";
-import db from "../../prisma/prisma.js";
+import db from "../../../prisma/prisma";
+import { RequestHandler } from "express";
 
-const decryptedPassHash = (hashedPassword) => {
+const createDecryptedPass = (hashedPassword: string) => {
   return crypto.AES.decrypt(
     hashedPassword,
-    process.env.PASS_SECRET_KEY
+    process.env.PASS_SECRET_KEY!
   ).toString(crypto.enc.Utf8);
 };
 
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.TOKEN_SECRET_KEY, {
+const generateToken = (userId: string) => {
+  return jwt.sign({ userId }, process.env.TOKEN_SECRET_KEY!, {
     expiresIn: "5h",
   });
 };
 
-const verifyUser = async (emailOrUsername) => {
+const verifyUser = async (emailOrUsername: string) => {
   const existingUser = await db.user.findFirst({
     where: {
       OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
@@ -24,12 +25,12 @@ const verifyUser = async (emailOrUsername) => {
   return existingUser ? true : false;
 };
 
-export const signIn = async (req, res) => {
+export const signIn: RequestHandler = async (req, res) => {
   const { emailOrUsername, password } = req.body;
 
   try {
     if (!(emailOrUsername && password)) {
-      return res.status(400).json({ message: "Boş geçilemez" });
+      return res.status(400).json({ message: "Alanlar boş geçilemez" });
     }
     if ((await verifyUser(emailOrUsername)) === false) {
       return res.status(400).json({ message: "kullanıcı bulunamadı" });
@@ -39,13 +40,13 @@ export const signIn = async (req, res) => {
         OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
       },
     });
-    decryptedPassHash(user.password) === password
+    createDecryptedPass(user!.password) === password
       ? res
           .status(200)
-          .json({ message: "Giriş Başarılı", token: generateToken(user.uuid) })
+          .json({ message: "Giriş Başarılı", token: generateToken(user!.uuid) })
       : res.status(500).json({ message: "Yanlış şifre" });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ message: "Sunucu Hatası" });
+    console.error((error as Error).message);
+    return res.status(503).json({ message: "Sunucu Hatası" });
   }
 };
