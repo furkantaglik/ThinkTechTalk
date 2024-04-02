@@ -47,7 +47,7 @@ export const signUp: RequestHandler = async (req, res) => {
       data: { firstName, lastName, email, username, password: hashedPassword },
     });
 
-    const token = generateToken(createdUser.uuid);
+    const token = generateToken(createdUser.id);
     return res.status(201).json({ message: "Hesabınız oluşturuldu", token });
   } catch (error) {
     console.error("Kullanıcı oluşturma hatası:", (error as Error).message);
