@@ -33,7 +33,7 @@ export const signIn: RequestHandler = async (req, res) => {
       return res.status(400).json({ message: "Alanlar boş geçilemez" });
     }
     if ((await verifyUser(emailOrUsername)) === false) {
-      return res.status(400).json({ message: "kullanıcı bulunamadı" });
+      return res.status(404).json({ message: "kullanıcı bulunamadı" });
     }
     const user = await db.user.findFirst({
       where: {
@@ -42,11 +42,11 @@ export const signIn: RequestHandler = async (req, res) => {
     });
     createDecryptedPass(user!.password) === password
       ? res
-          .status(200)
+          .status(201)
           .json({ message: "Giriş Başarılı", token: generateToken(user!.id) })
       : res.status(500).json({ message: "Yanlış şifre" });
   } catch (error) {
     console.error((error as Error).message);
-    return res.status(503).json({ message: "Sunucu Hatası" });
+    return res.status(500).json({ message: "beklenmedik bir hata" });
   }
 };

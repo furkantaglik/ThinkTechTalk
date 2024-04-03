@@ -7,6 +7,14 @@ export const BlogSchema = z.object({
     .max(50, "Başlık maksimum 50 karakterden  oluşabilir"),
   content: z.string({ required_error: "Alanlar boş geçilemez" }),
   userId: z.string({ required_error: "Alanlar boş geçilemez" }),
+  categoryId: z.string({ required_error: "Alanlar boş geçilemez" }),
+});
+
+export const CategorySchema = z.object({
+  name: z
+    .string({ required_error: "Alanlar boş geçilemez" })
+    .min(2, "kategori minimum 2 karakterden oluşabilir")
+    .max(50, "kategori maksimum 50 karakterden  oluşabilir"),
 });
 
 export const UserSchema = z.object({

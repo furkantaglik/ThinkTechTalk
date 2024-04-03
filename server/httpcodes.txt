@@ -1,0 +1,25 @@
+1xx: Bilgi Durumu
+
+100: Devam Et
+101: Protokol Değiştirme
+2xx: Başarılı Durum
+
+200: Tamam
+201: Oluşturuldu
+204: İçerik Yok (No Content)
+3xx: Yönlendirme
+
+301: Kalıcı Olarak Taşındı (Moved Permanently)
+302: Geçici Olarak Taşındı (Found, Moved Temporarily)
+304: Sayfa Erişilemez (Not Modified)
+4xx: İstemci Hatası
+
+400: Geçersiz İstek (Bad Request)
+401: Yetkisiz Erişim (Unauthorized)
+404: Bulunamadı (Not Found)
+403: Yasaklanmış (Forbidden)
+5xx: Sunucu Hatası
+
+500: Sunucu Hatası (Internal Server Error)
+502: Geçersiz Ağ Geçidi (Bad Gateway)
+503: Servis Kullanılamıyor (Service Unavailable)

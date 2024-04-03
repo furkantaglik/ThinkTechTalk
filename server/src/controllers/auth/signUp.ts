@@ -25,15 +25,15 @@ const verifyUser = async (username: string, email: string) => {
 };
 
 export const signUp: RequestHandler = async (req, res) => {
-  const { firstName, lastName, email, username, password } = req.body;
-  const user = UserSchema.safeParse({
-    firstName,
-    lastName,
-    email,
-    username,
-    password,
-  });
   try {
+    const { firstName, lastName, email, username, password } = req.body;
+    const user = UserSchema.safeParse({
+      firstName,
+      lastName,
+      email,
+      username,
+      password,
+    });
     if (!user.success) {
       return res.status(400).json({ message: user.error.issues[0].message });
     }
@@ -50,7 +50,7 @@ export const signUp: RequestHandler = async (req, res) => {
     const token = generateToken(createdUser.id);
     return res.status(201).json({ message: "Hesabınız oluşturuldu", token });
   } catch (error) {
-    console.error("Kullanıcı oluşturma hatası:", (error as Error).message);
-    return res.status(503).json({ message: "Sunucu hatası" });
+    console.error((error as Error).message);
+    return res.status(500).json({ message: "beklenmedik bir hata" });
   }
 };
