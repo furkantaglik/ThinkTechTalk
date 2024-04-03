@@ -2,10 +2,11 @@ import db from "../../../prisma/prisma";
 import { RequestHandler } from "express";
 import { verifyUser } from "../../helpers/verifyUser";
 import { UserSchema } from "../../utils/ZSchema";
+import { Role } from "@prisma/client";
 
 export const deleteByUserId: RequestHandler = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     if (!userId) {
       res.status(404).json({ message: "Kullanıcı id eksik" });
     }

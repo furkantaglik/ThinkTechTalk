@@ -3,14 +3,15 @@ import jwt from "jsonwebtoken";
 import db from "../../../prisma/prisma";
 import { UserSchema } from "../../utils/ZSchema";
 import { RequestHandler } from "express";
+import { User } from "@prisma/client";
 
 const createEncryptedPass = (password: string) => {
   const key = process.env.PASS_SECRET_KEY;
   return crypto.AES.encrypt(password, key!).toString();
 };
 
-const generateToken = (userId: string) => {
-  return jwt.sign({ userId }, process.env.TOKEN_SECRET_KEY!, {
+const generateToken = (user: User) => {
+  return jwt.sign(user, process.env.TOKEN_SECRET_KEY!, {
     expiresIn: "5h",
   });
 };
@@ -47,7 +48,7 @@ export const signUp: RequestHandler = async (req, res) => {
       data: { firstName, lastName, email, username, password: hashedPassword },
     });
 
-    const token = generateToken(createdUser.id);
+    const token = generateToken(createdUser);
     return res.status(201).json({ message: "Hesabınız oluşturuldu", token });
   } catch (error) {
     console.error((error as Error).message);

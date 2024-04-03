@@ -2,6 +2,7 @@ import crypto from "crypto-js";
 import jwt from "jsonwebtoken";
 import db from "../../../prisma/prisma";
 import { RequestHandler } from "express";
+import { User } from "@prisma/client";
 
 const createDecryptedPass = (hashedPassword: string) => {
   return crypto.AES.decrypt(
@@ -10,8 +11,8 @@ const createDecryptedPass = (hashedPassword: string) => {
   ).toString(crypto.enc.Utf8);
 };
 
-const generateToken = (userId: string) => {
-  return jwt.sign({ userId }, process.env.TOKEN_SECRET_KEY!, {
+const generateToken = (user: User) => {
+  return jwt.sign(user, process.env.TOKEN_SECRET_KEY!, {
     expiresIn: "5h",
   });
 };
@@ -40,10 +41,10 @@ export const signIn: RequestHandler = async (req, res) => {
         OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
       },
     });
-    createDecryptedPass(user!.password) === password
+    return createDecryptedPass(user!.password) === password
       ? res
           .status(201)
-          .json({ message: "Giriş Başarılı", token: generateToken(user!.id) })
+          .json({ message: "Giriş Başarılı", token: generateToken(user!) })
       : res.status(500).json({ message: "Yanlış şifre" });
   } catch (error) {
     console.error((error as Error).message);

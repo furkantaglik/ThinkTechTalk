@@ -1,13 +1,15 @@
 import { RequestHandler } from "express";
 import { BlogSchema } from "../../utils/ZSchema";
-import db from "../../../prisma/prisma";
 import { verifyUser } from "../../helpers/verifyUser";
 import { verifyCategory } from "../../helpers/verifyCategory";
 import { verifyBlog } from "../../helpers/verifyBlog";
+import db from "../../../prisma/prisma";
+import { Role } from "@prisma/client";
 
 export const createBlog: RequestHandler = async (req, res) => {
   try {
-    const { title, content, userId, categoryId } = req.body;
+    const userId = req.user.id;
+    const { title, content, categoryId } = req.body;
     const blog = BlogSchema.safeParse({
       title,
       content,
@@ -16,9 +18,6 @@ export const createBlog: RequestHandler = async (req, res) => {
     });
     if (!blog.success) {
       return res.status(400).json({ message: blog.error.issues[0].message });
-    }
-    if (!(await verifyUser(userId))) {
-      res.status(404).json({ message: "kullanıcı bulunamadı" });
     }
     if (!(await verifyCategory(categoryId))) {
       return res.status(404).json({ message: "kategori bulunamadı" });
@@ -50,8 +49,9 @@ export const getAllBlogs: RequestHandler = async (req, res) => {
 
 export const updateByBlogId: RequestHandler = async (req, res) => {
   try {
+    const userId = req.user.id;
     const blogId = req.params.id;
-    const { title, content, userId, categoryId } = req.body;
+    const { title, content, categoryId } = req.body;
 
     const blog = BlogSchema.safeParse({
       title,
@@ -84,12 +84,21 @@ export const updateByBlogId: RequestHandler = async (req, res) => {
 
 export const deleteByBlogId: RequestHandler = async (req, res) => {
   try {
+    const userId = req.user.id;
     const blogId = req.params.id;
     if (!blogId) {
       return res.status(400).json({ message: "blog id eksik" });
     }
     if (!(await verifyBlog(blogId))) {
       return res.status(404).json({ message: "blog bulunamadı" });
+    }
+    if (
+      !(
+        req.user.Role === Role.ADMIN ||
+        (await db.blog.findMany({ where: { id: blogId, userId: userId } }))
+      )
+    ) {
+      res.status(403).json({ message: "yetkiniz yok" });
     }
     await db.blog.delete({
       where: { id: blogId },

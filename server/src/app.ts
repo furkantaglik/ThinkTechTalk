@@ -3,10 +3,11 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import blogRoutes from "./routes/blogRoutes";
-import isAuthenticated from "./middleware/authMw";
+import checkToken from "./middleware/checkToken";
 import categoryRouters from "./routes/categoryRoutes";
 import profileRouters from "./routes/profileRoutes";
 import userRoutes from "./routes/userRoutes";
+import checkRole from "./middleware/checkRole";
 
 const app = express();
 app.use(express.json());
@@ -15,7 +16,7 @@ dotenv.config();
 app.use("/api/auth", authRoutes);
 
 //middleware
-// app.use(isAuthenticated);
+app.use(checkToken);
 
 app.use("/api/user", userRoutes);
 app.use("/api/blog", blogRoutes);
