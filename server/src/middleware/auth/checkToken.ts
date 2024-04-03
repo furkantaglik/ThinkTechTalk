@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import db from "../../prisma/prisma";
+import db from "../../../prisma/prisma";
 
 const checkToken: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -17,10 +17,6 @@ const checkToken: RequestHandler = async (req, res, next) => {
         .json({ message: "Yetkilendirme başarısız. Geçersiz token." });
     }
     req.user = decoded;
-    // const isHas = await db.user.findUnique({ where: { id: req.user.id } });
-    // if (!isHas) {
-    //   return res.status(404).json({ message: "kullanıcı bulunamadı" });
-    // }
     next();
   });
 };

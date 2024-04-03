@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
-import db from "../../prisma/prisma";
+import db from "../../../prisma/prisma";
 
 const checkUser: RequestHandler = async (req, res, next) => {
   const userId = req.user.id;
