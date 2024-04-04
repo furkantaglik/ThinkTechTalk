@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 import { CategorySchema } from "../../utils/ZSchema";
-import { verifyCategory } from "../../helpers/verifyCategory";
 import db from "../../../prisma/prisma";
 
 export const createCategory: RequestHandler = async (req, res) => {
@@ -29,7 +28,7 @@ export const createCategory: RequestHandler = async (req, res) => {
 export const getAllCategory: RequestHandler = async (req, res) => {
   try {
     const categoryData = await db.category.findMany();
-    res.status(200).json({ data: categoryData });
+    return res.status(200).json({ data: categoryData });
   } catch (error) {
     console.error((error as Error).message);
     return res.status(500).json({ message: "beklenmedik bir hata" });
@@ -52,14 +51,14 @@ export const updateByCategoryId: RequestHandler = async (req, res) => {
     if (!categoryId) {
       return res.status(400).json({ message: "Kategori id eksik" });
     }
-    if (!(await verifyCategory(categoryId))) {
-      return res.status(404).json({ message: "kategori bulunamadı" });
-    }
     const updatedCategory = await db.category.update({
       where: { id: categoryId },
       data: { name },
     });
-    res
+    if (!updatedCategory) {
+      return res.status(404).json({ message: "kategori bulunamadı" });
+    }
+    return res
       .status(201)
       .json({ message: "Kategori güncellendi", data: updatedCategory });
   } catch (error) {
@@ -70,16 +69,17 @@ export const updateByCategoryId: RequestHandler = async (req, res) => {
 
 export const deleteByCategoryId: RequestHandler = async (req, res) => {
   try {
-    const deletedId = req.params.id;
-    if (!deletedId) {
+    const categoryId = req.params.id;
+    if (!categoryId) {
       return res.status(400).json({ message: "kategori id eksik" });
     }
-
-    await db.category.delete({
-      where: { id: deletedId },
+    const result = await db.category.delete({
+      where: { id: categoryId },
     });
-
-    res.status(200).json({ message: "kategori başarıyla silindi" });
+    if (!result) {
+      return res.status(404).json({ message: "kategori bulunamadı" });
+    }
+    return res.status(200).json({ message: "kategori başarıyla silindi" });
   } catch (error) {
     console.error((error as Error).message);
     return res.status(500).json({ message: "beklenmedik bir hata" });
@@ -88,14 +88,17 @@ export const deleteByCategoryId: RequestHandler = async (req, res) => {
 
 export const getByCategoryId: RequestHandler = async (req, res) => {
   try {
-    const id = req.params.id;
-    if (!id) {
+    const categoryId = req.params.id;
+    if (!categoryId) {
       return res.status(400).json({ message: "kategori id eksik" });
     }
-    const category = await db.category.findUnique({
-      where: { id: id },
+    const data = await db.category.findUnique({
+      where: { id: categoryId },
     });
-    return res.status(200).json({ data: category });
+    if (!data) {
+      return res.status(404).json({ message: "kategori bulunamadı" });
+    }
+    return res.status(200).json({ data: data });
   } catch (error) {
     console.error((error as Error).message);
     return res.status(500).json({ message: "beklenmedik bir hata" });

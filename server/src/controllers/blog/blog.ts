@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { BlogSchema } from "../../utils/ZSchema";
 import { verifyUser } from "../../helpers/verifyUser";
 import { verifyCategory } from "../../helpers/verifyCategory";
-import { verifyBlog } from "../../helpers/verifyBlog";
 import db from "../../../prisma/prisma";
 
 export const createBlog: RequestHandler = async (req, res) => {
@@ -46,7 +45,6 @@ export const getAllBlogs: RequestHandler = async (req, res) => {
   }
 };
 
-//*
 export const updateByBlogId: RequestHandler = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -65,6 +63,9 @@ export const updateByBlogId: RequestHandler = async (req, res) => {
     if (!(await verifyCategory(categoryId))) {
       return res.status(404).json({ message: "kategori bulunamadı" });
     }
+    if (!blogId) {
+      return res.status(400).json({ message: "blog id eksik" });
+    }
     const updatedBlog = await db.blog.update({
       where: { id: blogId },
       data: { title, content, userId, categoryId },
@@ -78,10 +79,12 @@ export const updateByBlogId: RequestHandler = async (req, res) => {
   }
 };
 
-//*
 export const deleteByBlogId: RequestHandler = async (req, res) => {
   try {
     const blogId = req.params.id;
+    if (!blogId) {
+      return res.status(400).json({ message: "blog id eksik" });
+    }
     await db.blog.delete({
       where: { id: blogId },
     });
@@ -114,9 +117,6 @@ export const getByCategoryId: RequestHandler = async (req, res) => {
     const categoryId = req.params.id;
     if (!categoryId) {
       return res.json(400).json({ message: "kategori id eksik" });
-    }
-    if (!(await verifyCategory(categoryId))) {
-      return res.status(404).json({ message: "kategori bulunamadı" });
     }
     const data = await db.blog.findMany({ where: { categoryId: categoryId } });
     if (!data) {
