@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { Role } from "@prisma/client";
 import db from "../../../prisma/prisma";
 
-export const userPer: RequestHandler = async (req, res, next) => {
+export const userAccess: RequestHandler = async (req, res, next) => {
   const userId = req.params.id;
   if (!userId) {
     return res.status(400).json({ message: "user id eksik" });

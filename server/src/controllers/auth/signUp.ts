@@ -10,7 +10,7 @@ const createEncryptedPass = (password: string) => {
   return crypto.AES.encrypt(password, key!).toString();
 };
 
-const generateToken = (user: User) => {
+const generateToken = (user: object) => {
   return jwt.sign(user, process.env.TOKEN_SECRET_KEY!, {
     expiresIn: "5h",
   });
@@ -48,7 +48,13 @@ export const signUp: RequestHandler = async (req, res) => {
       data: { firstName, lastName, email, username, password: hashedPassword },
     });
 
-    const token = generateToken(createdUser);
+    const token = generateToken({
+      user: {
+        id: createdUser.id,
+        username: createdUser.username,
+        role: createdUser.role,
+      },
+    });
     return res.status(201).json({ message: "Hesabınız oluşturuldu", token });
   } catch (error) {
     console.error((error as Error).message);

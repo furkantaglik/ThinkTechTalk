@@ -8,16 +8,16 @@ import {
   getByUserId,
   updateByBlogId,
 } from "../controllers/blog/blog";
-import { blogPer } from "../middleware/permissions/blogPer";
+import { blogAccess } from "../middleware/access/blogAccess";
 
 const blogRouters = express.Router();
 
 blogRouters.get("/getbyblogid/:id", getByBlogId);
-blogRouters.get("/deletebyblogid/:id", blogPer, deleteByBlogId);
+blogRouters.get("/deletebyblogid/:id", blogAccess, deleteByBlogId);
 blogRouters.get("/getbyuserid/:id", getByUserId);
 blogRouters.get("/getallblogs", getAllBlogs);
 blogRouters.get("/getbycategoryid/:id", getByCategoryId);
-blogRouters.post("/updatebyblogid/:id", blogPer, updateByBlogId);
+blogRouters.post("/updatebyblogid/:id", blogAccess, updateByBlogId);
 blogRouters.post("/createblog", createBlog);
 
 export default blogRouters;
