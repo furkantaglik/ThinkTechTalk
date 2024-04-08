@@ -5,9 +5,6 @@ import { UserSchema } from "../../utils/ZSchema";
 export const deleteByUserId: RequestHandler = async (req, res) => {
   try {
     const userId = req.user.id;
-    if (!userId) {
-      return res.status(400).json({ message: "Kullanıcı id eksik" });
-    }
     const data = await db.user.delete({ where: { id: userId } });
     if (!data) {
       return res.status(404).json({ message: "kullanıcı bulunamadı" });
@@ -47,9 +44,6 @@ export const updateByUserId: RequestHandler = async (req, res) => {
       username,
       password,
     });
-    if (!userId) {
-      return res.status(400).json({ message: "kullanıcı id eksik" });
-    }
     if (!user.success) {
       return res.status(400).json({ message: user.error.issues[0].message });
     }

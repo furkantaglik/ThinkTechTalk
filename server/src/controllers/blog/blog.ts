@@ -63,12 +63,9 @@ export const updateByBlogId: RequestHandler = async (req, res) => {
     if (!(await verifyCategory(categoryId))) {
       return res.status(404).json({ message: "kategori bulunamadı" });
     }
-    if (!blogId) {
-      return res.status(400).json({ message: "blog id eksik" });
-    }
     const updatedBlog = await db.blog.update({
       where: { id: blogId },
-      data: { title, content, userId, categoryId },
+      data: { title, content, categoryId },
     });
     return res
       .status(201)
@@ -82,9 +79,6 @@ export const updateByBlogId: RequestHandler = async (req, res) => {
 export const deleteByBlogId: RequestHandler = async (req, res) => {
   try {
     const blogId = req.params.id;
-    if (!blogId) {
-      return res.status(400).json({ message: "blog id eksik" });
-    }
     await db.blog.delete({
       where: { id: blogId },
     });

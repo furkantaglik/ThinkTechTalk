@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import db from "../../../prisma/prisma";
 
 const checkToken: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
