@@ -49,11 +49,9 @@ export const signUp: RequestHandler = async (req, res) => {
     });
 
     const token = generateToken({
-      user: {
-        id: createdUser.id,
-        username: createdUser.username,
-        role: createdUser.role,
-      },
+      id: createdUser.id,
+      username: createdUser.username,
+      role: createdUser.role,
     });
     return res.status(201).json({ message: "Hesabınız oluşturuldu", token });
   } catch (error) {

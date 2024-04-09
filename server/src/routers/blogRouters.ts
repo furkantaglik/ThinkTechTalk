@@ -7,7 +7,7 @@ import {
   getByCategoryId,
   getByUserId,
   updateByBlogId,
-} from "../controllers/blog/blog";
+} from "../controllers/blogController";
 import { blogAccess } from "../middleware/access/blogAccess";
 
 const blogRouters = express.Router();

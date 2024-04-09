@@ -14,8 +14,13 @@ enum Role {
   EDITOR
 }
 
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
 model User {
-  id        String    @id @unique @default(uuid())
+  id        String    @id @unique @default(cuid())
   firstName String
   lastName  String
   email     String    @unique
@@ -23,64 +28,90 @@ model User {
   password  String
   avatar    String?
   bio       String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt()
   role      Role      @default(USER)
   blogs     Blog[]
   followers Follow[]  @relation("following")
   following Follow[]  @relation("follower")
   comments  Comment[]
-  likes     Like[]
+  likes     Liked[]
   saved     Saved[]
+  Post      Post[]
 }
 
 model Follow {
-  follower    User   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   followerId  String
-  following   User   @relation("following", fields: [followingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   followingId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@id([followerId, followingId])
 }
 
 model Blog {
-  id         String    @id @unique @default(uuid())
+  id         String    @id @unique @default(cuid())
   title      String
   content    String
   categoryId String?
   userId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  likes      Like[]
+  likes      Liked[]
   comments   Comment[]
   saved      Saved[]
 }
 
-model Category {
-  id    String @id @unique @default(uuid())
-  name  String @unique
-  blogs Blog[]
+model Post {
+  id        String    @id @unique @default(cuid())
+  title     String
+  mediaPath String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    String
+  mediaType MediaType
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model Like {
-  id     String @id @unique @default(uuid())
-  blogId String
-  userId String
-  blog   Blog   @relation(fields: [blogId], references: [id])
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model Category {
+  id        String   @id @unique @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blogs     Blog[]
+}
+
+model Liked {
+  id        String   @id @unique @default(cuid())
+  blogId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Comment {
-  id      String @id @unique @default(uuid())
-  blogId  String
-  userId  String
-  content String
-  blog    Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id        String   @id @unique @default(cuid())
+  blogId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Saved {
-  id     String @id @unique @default(uuid())
-  userId String
-  blogId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id        String   @id @unique @default(cuid())
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
-import { BlogSchema } from "../../utils/ZSchema";
-import { verifyUser } from "../../helpers/verifyUser";
-import { verifyCategory } from "../../helpers/verifyCategory";
-import db from "../../../prisma/prisma";
+import { BlogSchema } from "../utils/ZSchema";
+import { verifyUser } from "../helpers/verifyUser";
+import { verifyCategory } from "../helpers/verifyCategory";
+import db from "../../prisma/prisma";
 
 export const createBlog: RequestHandler = async (req, res) => {
   try {
@@ -20,6 +20,7 @@ export const createBlog: RequestHandler = async (req, res) => {
     if (!(await verifyCategory(categoryId))) {
       return res.status(404).json({ message: "kategori bulunamadı" });
     }
+
     await db.blog.create({
       data: {
         title,
@@ -28,6 +29,7 @@ export const createBlog: RequestHandler = async (req, res) => {
         categoryId,
       },
     });
+
     return res.status(201).json({ message: "blog oluşturuldu" });
   } catch (error) {
     console.error((error as Error).message);
@@ -113,7 +115,7 @@ export const getByCategoryId: RequestHandler = async (req, res) => {
       return res.json(400).json({ message: "kategori id eksik" });
     }
     const data = await db.blog.findMany({ where: { categoryId: categoryId } });
-    if (!data) {
+    if (data.length === 0) {
       return res
         .status(404)
         .json({ message: "kategoriye ait blog bulunamadı" });
@@ -135,7 +137,7 @@ export const getByUserId: RequestHandler = async (req, res) => {
       return res.status(404).json({ message: "kullanıcı bulunamadı" });
     }
     const data = await db.blog.findMany({ where: { userId: userId } });
-    if (!data) {
+    if (data.length === 0) {
       return res
         .status(404)
         .json({ message: "kullanıcının blog yazısı bulunmuyor" });

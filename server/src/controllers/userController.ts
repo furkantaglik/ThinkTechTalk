@@ -1,6 +1,6 @@
-import db from "../../../prisma/prisma";
+import db from "../../prisma/prisma";
 import { RequestHandler } from "express";
-import { UserSchema } from "../../utils/ZSchema";
+import { UserSchema } from "../utils/ZSchema";
 
 export const deleteByUserId: RequestHandler = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { CategorySchema } from "../../utils/ZSchema";
-import db from "../../../prisma/prisma";
+import { CategorySchema } from "../utils/ZSchema";
+import db from "../../prisma/prisma";
 
 export const createCategory: RequestHandler = async (req, res) => {
   try {

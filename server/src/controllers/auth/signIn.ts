@@ -43,11 +43,9 @@ export const signIn: RequestHandler = async (req, res) => {
     });
 
     const token = generateToken({
-      user: {
-        id: user!.id,
-        username: user!.username,
-        role: user!.role,
-      },
+      id: user!.id,
+      username: user!.username,
+      role: user!.role,
     });
     return createDecryptedPass(user!.password) === password
       ? res.status(201).json({ message: "Giriş Başarılı", token: token })

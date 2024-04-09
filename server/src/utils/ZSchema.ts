@@ -52,3 +52,13 @@ export const UserSchema = z.object({
     .string({ required_error: "Alanlar boş geçilemez" })
     .min(5, "Şifre en az 5 karakterden oluşabilir"),
 });
+
+export const PostSchema = z.object({
+  title: z
+    .string({ required_error: "Alanlar boş geçilemez" })
+    .min(2, "Başlık minimum 2 karakterden oluşabilir")
+    .max(100, "Başlık maksimum 100 karakterden  oluşabilir"),
+  userId: z.string({ required_error: "Alanlar boş geçilemez" }),
+  mediaPath: z.string({ required_error: "Alanlar boş geçilemez" }),
+  mediaType: z.string({ required_error: "Alanlar boş geçilemez" }),
+});
