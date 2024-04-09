@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 
+
 # local env files
 .env*.local
 .env
@@ -27,3 +28,6 @@ dist-ssr
 *.sln
 *.sw?
 
+server/uploads/images/*
+server/uploads/videos/*
+server/uploads/files/*
