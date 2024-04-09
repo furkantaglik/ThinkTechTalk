@@ -59,6 +59,4 @@ export const PostSchema = z.object({
     .min(2, "Başlık minimum 2 karakterden oluşabilir")
     .max(100, "Başlık maksimum 100 karakterden  oluşabilir"),
   userId: z.string({ required_error: "Alanlar boş geçilemez" }),
-  mediaPath: z.string({ required_error: "Alanlar boş geçilemez" }),
-  mediaType: z.string({ required_error: "Alanlar boş geçilemez" }),
 });

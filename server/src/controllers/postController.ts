@@ -5,25 +5,24 @@ import db from "../../prisma/prisma";
 
 export const createPost: RequestHandler = async (req, res) => {
   try {
+    const media = req.file;
     const userId = req.user.id;
-    const { title, mediaPath, mediaType } = req.body;
+    const { title } = req.body;
     const post = PostSchema.safeParse({
       title,
-      mediaPath,
       userId,
-      mediaType,
     });
     if (!post.success) {
       return res.status(400).json({ message: post.error.issues[0].message });
     }
-    await db.post.create({
-      data: {
-        title,
-        mediaPath,
-        userId,
-        mediaType,
-      },
-    });
+    // await db.post.create({
+    //   data: {
+    //     title,
+    //     mediaPath: "test",
+    //     userId,
+    //     mediaType: "IMAGE",
+    //   },
+    // });
     return res.status(201).json({ message: "post gönderildi" });
   } catch (error) {
     console.error((error as Error).message);
