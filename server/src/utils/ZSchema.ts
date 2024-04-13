@@ -59,4 +59,29 @@ export const PostSchema = z.object({
     .min(2, "Başlık minimum 2 karakterden oluşabilir")
     .max(100, "Başlık maksimum 100 karakterden  oluşabilir"),
   userId: z.string({ required_error: "Alanlar boş geçilemez" }),
+  media: z
+    .object(
+      { destination: z.string() },
+      { required_error: "Medya boş geçilemez" }
+    )
+    .nullable(),
+});
+
+export const CommentSchema = z.object({
+  content: z
+    .string({ required_error: "Alanlar boş geçilemez" })
+    .min(3, "yorum minimum 3 karakterden oluşabilir")
+    .max(200, "yorum maksimum 200 karakterden  oluşabilir"),
+  userId: z.string({ required_error: "Alanlar boş geçilemez" }),
+  blogId: z.string({ required_error: "Alanlar boş geçilemez" }),
+});
+
+export const LikeSchema = z.object({
+  userId: z.string({ required_error: "Alanlar boş geçilemez" }),
+  blogId: z.string({ required_error: "Alanlar boş geçilemez" }),
+});
+
+export const SavedSchema = z.object({
+  userId: z.string({ required_error: "Alanlar boş geçilemez" }),
+  blogId: z.string({ required_error: "Alanlar boş geçilemez" }),
 });

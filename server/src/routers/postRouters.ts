@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import { upload } from "../utils/multer";
 import {
   createPost,
@@ -11,17 +12,11 @@ import {
 import { postAccess } from "../middleware/access/postAccess";
 const postRouters = express.Router();
 
-postRouters.get("/getbypostid:id", getByPostId);
-postRouters.get("/getbyuserid:id", getByUserId);
+postRouters.get("/getbypostid/:id", getByPostId);
+postRouters.get("/getbyuserid/:id", getByUserId);
 postRouters.get("/getallposts", getAllPosts);
-postRouters.get("/deletebypostid", postAccess, deleteByPostId);
-
-postRouters.post("/createpost", upload.single("media"), createPost);
-postRouters.post(
-  "/updatebypostid:id",
-  postAccess,
-  upload.single("media"),
-  updateByPostId
-);
+postRouters.get("/deletebypostid/:id", postAccess, deleteByPostId);
+postRouters.post("/updatebypostid/:id", postAccess, upload, updateByPostId);
+postRouters.post("/createpost", upload, createPost);
 
 export default postRouters;

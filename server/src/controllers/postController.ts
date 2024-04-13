@@ -11,6 +11,7 @@ export const createPost: RequestHandler = async (req, res) => {
     const post = PostSchema.safeParse({
       title,
       userId,
+      media,
     });
     if (!post.success) {
       return res.status(400).json({ message: post.error.issues[0].message });
@@ -18,9 +19,9 @@ export const createPost: RequestHandler = async (req, res) => {
     await db.post.create({
       data: {
         title,
-        mediaPath: "test",
+        mediaPath: media!.path,
+        mediaType: media!.mimetype.startsWith("image/") ? "IMAGE" : "VIDEO",
         userId,
-        mediaType: "IMAGE",
       },
     });
     return res.status(201).json({ message: "post gönderildi" });
@@ -42,22 +43,25 @@ export const getAllPosts: RequestHandler = async (req, res) => {
 
 export const updateByPostId: RequestHandler = async (req, res) => {
   try {
+    const media = req.file;
     const postId = req.params.id;
     const userId = req.user.id;
-    const { title, mediaPath, mediaType } = req.body;
+    const { title } = req.body;
     const post = PostSchema.safeParse({
       title,
-      mediaType,
       userId,
-      mediaPath,
+      media,
     });
     if (!post.success) {
       return res.status(400).json({ message: post.error.issues[0].message });
     }
-
     const updatedPost = await db.post.update({
       where: { id: postId },
-      data: { title, mediaPath, mediaType },
+      data: {
+        title,
+        mediaPath: media!.path,
+        mediaType: media!.mimetype.startsWith("image/") ? "IMAGE" : "VIDEO",
+      },
     });
     return res
       .status(201)
