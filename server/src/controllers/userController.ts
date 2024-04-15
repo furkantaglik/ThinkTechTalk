@@ -59,3 +59,13 @@ export const updateByUserId: RequestHandler = async (req, res) => {
     return res.status(500).json({ message: "beklenmedik bir hata" });
   }
 };
+
+export const getAllUsers: RequestHandler = async (req, res) => {
+  try {
+    const data = await db.user.findMany();
+    return res.status(200).json({ data: data });
+  } catch (error) {
+    console.error((error as Error).message);
+    return res.status(500).json({ message: "beklenmedik bir hata" });
+  }
+};

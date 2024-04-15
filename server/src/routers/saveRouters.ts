@@ -11,7 +11,7 @@ import { SaveAccess } from "../middleware/access/saveAccess";
 const saveRouters = express.Router();
 
 saveRouters.get("/getallsaves", getAllSaves);
-saveRouters.get("/deletebylikeid/:id", SaveAccess, deleteBySaveId);
+saveRouters.get("/deletebysaveid/:id", SaveAccess, deleteBySaveId);
 saveRouters.post("/createsave", createSave);
 saveRouters.get("/getbyuserid/:id", getByUserId);
 saveRouters.get("/getbyblogid/:id", getByBlogId);

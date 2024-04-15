@@ -10,6 +10,7 @@ import postRouters from "./routers/postRouters";
 import LikeRouters from "./routers/likeRouters";
 import saveRouters from "./routers/saveRouters";
 import commentRouters from "./routers/commentRouters";
+import followRouters from "./routers/followRouters";
 
 const app = express();
 app.use(express.json());
@@ -24,8 +25,9 @@ app.use("/api/user", userRouters);
 app.use("/api/blog", blogRouters);
 app.use("/api/category", categoryRouters);
 app.use("/api/post", postRouters);
-app.use("/api/like/", LikeRouters);
+app.use("/api/like", LikeRouters);
 app.use("/api/save", saveRouters);
 app.use("/api/comment", commentRouters);
+app.use("/api/follow", followRouters);
 
 export default app;
