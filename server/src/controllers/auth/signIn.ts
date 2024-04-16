@@ -49,7 +49,7 @@ export const signIn: RequestHandler = async (req, res) => {
     });
     return createDecryptedPass(user!.password) === password
       ? res.status(201).json({ message: "Giriş Başarılı", token: token })
-      : res.status(500).json({ message: "Yanlış şifre" });
+      : res.status(400).json({ message: "Yanlış şifre" });
   } catch (error) {
     console.error((error as Error).message);
     return res.status(500).json({ message: "beklenmedik bir hata" });

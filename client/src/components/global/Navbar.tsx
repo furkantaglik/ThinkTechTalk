@@ -6,7 +6,7 @@ import {
   NavigationMenu,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { LaptopMinimal, Menu, Moon, Sun } from "lucide-react";
+import { LaptopMinimal, Menu, Moon, Sun, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -19,6 +19,11 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   return (
     <header className="flex justify-between h-20 w-full shrink-0 items-center px-4 md:px-6">
       <Sheet>
@@ -61,10 +66,12 @@ export default function Navbar() {
           </div>
         </SheetContent>
       </Sheet>
+
       <Link className="mr-6 hidden lg:flex" to="/">
         <h1 className=" font-mono text-xl">ThinkTechTalk</h1>
         <span className="sr-only">3T Inc</span>
       </Link>
+
       <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList>
           <NavigationMenuLink asChild>
@@ -102,35 +109,32 @@ export default function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div className="">
-        <div className=" flex space-x-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar>
-                <AvatarImage src="https://avatars.githubusercontent.com/u/132236699?v=4" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className={cn("px-5")}>
-              <DropdownMenuLabel>Hesabım</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profilim</DropdownMenuItem>
-              <DropdownMenuItem>Gönderilerim</DropdownMenuItem>
-              <DropdownMenuItem>Konularım</DropdownMenuItem>
-              <DropdownMenuItem>Çıkış Yap</DropdownMenuItem>
-              <DropdownMenuSeparator />
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar>
+            <AvatarImage src="https://avatars.githubusercontent.com/u/132236699?v=4" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className={cn("px-5 me-3")}>
+          <DropdownMenuLabel className="flex justify-center items-center">
+            <User /> Hesabım
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Profilim</DropdownMenuItem>
+          <DropdownMenuItem>Gönderilerim</DropdownMenuItem>
+          <DropdownMenuItem>Konularım</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}>Çıkış Yap</DropdownMenuItem>
 
-              <DropdownMenuItem
-                className={cn("flex justify-between space-x-2")}
-              >
-                <Moon className="hover:bg-slate-100 hover:cursor-pointer rounded-full hover:rotate-45 transition-all" />
-                <LaptopMinimal className="hover:bg-slate-100 hover:cursor-pointer rounded-full" />
-                <Sun className="hover:bg-slate-100 hover:cursor-pointer rounded-full hover:rotate-45 transition-all" />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem className={cn("flex justify-between space-x-2")}>
+            <Moon className="hover:bg-slate-100 hover:cursor-pointer rounded-full hover:rotate-45 transition-all" />
+            <LaptopMinimal className="hover:bg-slate-100 hover:cursor-pointer rounded-full" />
+            <Sun className="hover:bg-slate-100 hover:cursor-pointer rounded-full hover:rotate-45 transition-all" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
 }

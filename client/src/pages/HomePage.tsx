@@ -1,3 +1,10 @@
+import Navbar from "@/components/global/Navbar";
+
 export default function HomePage() {
-  return <div>Home</div>;
+  return (
+    <>
+      <Navbar />
+      Home
+    </>
+  );
 }
