@@ -12,7 +12,7 @@ const createEncryptedPass = (password: string) => {
 
 const generateToken = (user: object) => {
   return jwt.sign(user, process.env.TOKEN_SECRET_KEY!, {
-    expiresIn: "5h",
+    expiresIn: "7d",
   });
 };
 
@@ -50,10 +50,19 @@ export const signUp: RequestHandler = async (req, res) => {
 
     const token = generateToken({
       id: createdUser.id,
+      firstName: createdUser.firstName,
+      lastName: createdUser.lastName,
       username: createdUser.username,
       role: createdUser.role,
     });
-    return res.status(201).json({ message: "Hesabınız oluşturuldu", token });
+    return res.status(201).json({
+      message: "Hesabınız oluşturuldu",
+      token: token,
+      username: createdUser?.username,
+      email: createdUser?.email,
+      role: createdUser?.role,
+      id: createdUser?.id,
+    });
   } catch (error) {
     console.error((error as Error).message);
     return res.status(500).json({ message: "beklenmedik bir hata" });

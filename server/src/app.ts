@@ -11,6 +11,8 @@ import LikeRouters from "./routers/likeRouters";
 import saveRouters from "./routers/saveRouters";
 import commentRouters from "./routers/commentRouters";
 import followRouters from "./routers/followRouters";
+import fs from "fs";
+import path from "path";
 
 const app = express();
 app.use(express.json());
@@ -19,8 +21,13 @@ dotenv.config();
 app.use("/api/auth", authRoutes);
 
 //middleware
-app.use(checkToken);
 
+app.get("/api/image/:id", function (req, res) {
+  const imageId = req.params.id;
+  const imagePath = path.join(__dirname, "../uploads/images/", `${imageId}`);
+  return res.sendFile(imagePath);
+});
+app.use(checkToken);
 app.use("/api/user", userRouters);
 app.use("/api/blog", blogRouters);
 app.use("/api/category", categoryRouters);

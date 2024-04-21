@@ -51,6 +51,11 @@ export const UserSchema = z.object({
   password: z
     .string({ required_error: "Alanlar boş geçilemez" })
     .min(5, "Şifre en az 5 karakterden oluşabilir"),
+  bio: z
+    .string()
+    .max(100, "biografi en fazla 100 karakterden oluşabilir")
+    .optional(),
+  avatar: z.string().optional(),
 });
 
 export const PostSchema = z.object({

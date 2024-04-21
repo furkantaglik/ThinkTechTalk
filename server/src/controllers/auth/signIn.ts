@@ -13,7 +13,7 @@ const createDecryptedPass = (hashedPassword: string) => {
 
 const generateToken = (user: object) => {
   return jwt.sign(user, process.env.TOKEN_SECRET_KEY!, {
-    expiresIn: "5h",
+    expiresIn: "7d",
   });
 };
 
@@ -44,11 +44,20 @@ export const signIn: RequestHandler = async (req, res) => {
 
     const token = generateToken({
       id: user!.id,
+      firstName: user!.firstName,
+      lastName: user!.lastName,
       username: user!.username,
       role: user!.role,
     });
     return createDecryptedPass(user!.password) === password
-      ? res.status(201).json({ message: "Giriş Başarılı", token: token })
+      ? res.status(201).json({
+          message: "Giriş Başarılı",
+          token: token,
+          username: user?.username,
+          email: user?.email,
+          role: user?.role,
+          id: user?.id,
+        })
       : res.status(400).json({ message: "Yanlış şifre" });
   } catch (error) {
     console.error((error as Error).message);
