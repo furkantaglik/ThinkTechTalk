@@ -11,11 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { apiUrl } from "@/lib/constants";
-import axios from "axios";
-import { handleError } from "@/lib/utils";
+import { useSignin } from "@/hooks/useSignin";
 
 export default function Login() {
+  const { signIn, isLoading } = useSignin();
   const [formData, setFormData] = useState({
     emailOrUsername: "",
     password: "",
@@ -25,13 +24,7 @@ export default function Login() {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(apiUrl + "/auth/signin", formData);
-      localStorage.setItem("token", response.data.token);
-      window.location.reload();
-    } catch (error) {
-      handleError(error);
-    }
+    await signIn(formData);
   };
 
   return (
@@ -74,7 +67,7 @@ export default function Login() {
                   type="password"
                 />
               </div>
-              <Button className="w-full" type="submit">
+              <Button disabled={isLoading} className="w-full" type="submit">
                 Giriş yap
               </Button>
             </div>

@@ -10,12 +10,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { handleError } from "@/lib/utils";
-import axios from "axios";
-import { apiUrl } from "@/lib/constants";
 import { ChangeEvent, useState } from "react";
+import { useSignup } from "@/hooks/useSignup";
 
 export default function Register() {
+  const { signUp, isLoading } = useSignup();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -28,13 +27,7 @@ export default function Register() {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(apiUrl + "/auth/signup", formData);
-      localStorage.setItem("token", response.data.token);
-      window.location.reload();
-    } catch (error) {
-      handleError(error);
-    }
+    await signUp(formData);
   };
   return (
     <>
@@ -104,7 +97,7 @@ export default function Register() {
                   onChange={handleChange}
                 />
               </div>
-              <Button className="w-full" type="submit">
+              <Button disabled={isLoading} className="w-full" type="submit">
                 Kayıt ol
               </Button>
             </div>

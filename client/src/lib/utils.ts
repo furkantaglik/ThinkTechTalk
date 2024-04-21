@@ -1,8 +1,8 @@
-import { toast } from "@/components/ui/use-toast";
-import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
-// import { useEffect } from "react";
+import { toast } from "@/components/ui/use-toast";
 import { twMerge } from "tailwind-merge";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -22,6 +22,23 @@ export function handleError(error: unknown) {
       });
 }
 
-export function isLogin() {
-  return localStorage.getItem("token");
+export function getToken() {
+  const userString = localStorage.getItem("user");
+  if (!userString) {
+    return null;
+  }
+  const user = JSON.parse(userString!);
+  const token = user.token;
+  return token;
+}
+
+export function getDecodedToken() {
+  const token = getToken();
+  return jwtDecode(token);
+}
+
+export function getUserFromLocal() {
+  const userString = localStorage.getItem("user");
+  const user = JSON.parse(userString!);
+  return user;
 }

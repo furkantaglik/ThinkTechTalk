@@ -1,17 +1,21 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Notfound from "./pages/NotFound";
 import { Toaster } from "./components/ui/toaster";
 import { PrivateRoutes } from "./components/auth/PrivateRoutes";
+import { useAuthContext } from "./context/AuthContext";
+import Navbar from "./components/global/Navbar";
 
 export default function App() {
-  const token = localStorage.getItem("token");
-  return (
-    <main className="max-w-screen-2xl mx-auto md:px-0 px-1">
-      <Toaster />
+  const { user } = useAuthContext();
+  const location = useLocation();
 
+  return (
+    <div className="max-w-screen-2xl mx-auto px-1">
+      {!["/login", "/register"].includes(location.pathname) && <Navbar />}
+      <Toaster />
       <Routes>
         <Route element={<PrivateRoutes />}>
           {/* Oturum gereken rotalar buraya */}
@@ -20,13 +24,13 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route
           path="/login"
-          element={token ? <Navigate to="/" replace /> : <LoginPage />}
+          element={user ? <Navigate to="/" replace /> : <LoginPage />}
         />
         <Route
           path="/register"
-          element={token ? <Navigate to="/" replace /> : <RegisterPage />}
+          element={user ? <Navigate to="/" replace /> : <RegisterPage />}
         />
       </Routes>
-    </main>
+    </div>
   );
 }

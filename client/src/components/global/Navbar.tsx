@@ -6,7 +6,14 @@ import {
   NavigationMenu,
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import { LaptopMinimal, Menu, Moon, Sun, User } from "lucide-react";
+import {
+  CircleUserRound,
+  LaptopMinimal,
+  Menu,
+  Moon,
+  Sun,
+  User,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -16,12 +23,41 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn, getToken, handleError } from "@/lib/utils";
+import { useTheme } from "@/context/Themeprovider";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { apiUrl } from "@/lib/constants";
+import { useLogout } from "@/hooks/useLogout";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function Navbar() {
+  const { setTheme } = useTheme();
+  const { logout } = useLogout();
+  const [avatar, SetAvatar] = useState(null);
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        if (user) {
+          const response = await axios.get(`${apiUrl}/user/getbyuserid`, {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          });
+          SetAvatar(response.data.user.avatar!);
+        }
+      } catch (error) {
+        handleError(error);
+      }
+    };
+
+    fetchProfileImage();
+  }, [user]);
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
+    logout();
   };
 
   return (
@@ -34,13 +70,13 @@ export default function Navbar() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <Link to="#">
-            <h1 className=" font-mono text-lg">ThinkTechTalk</h1>
+          <Link to="/">
+            <h1 className="font-mono text-lg">ThinkTechTalk</h1>
             <span className="sr-only">3T Inc</span>
           </Link>
-          <div className="grid gap-2 py-6">
+          <div className="grid gap-2 pt-2 border-t-2">
             <Link
-              className="flex w-full items-center py-2 text-lg font-semibold"
+              className="flex w-full items-center pb-2 text-lg font-semibold"
               to="/"
             >
               Anasayfa
@@ -67,7 +103,7 @@ export default function Navbar() {
         </SheetContent>
       </Sheet>
 
-      <Link className="mr-6 hidden lg:flex" to="/">
+      <Link className="mr-6 " to="/">
         <h1 className=" font-mono text-xl">ThinkTechTalk</h1>
         <span className="sr-only">3T Inc</span>
       </Link>
@@ -76,7 +112,7 @@ export default function Navbar() {
         <NavigationMenuList>
           <NavigationMenuLink asChild>
             <Link
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 text-md font-semibold "
               to="/"
             >
               Anasayfa
@@ -84,7 +120,7 @@ export default function Navbar() {
           </NavigationMenuLink>
           <NavigationMenuLink asChild>
             <Link
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 text-md font-semibold   "
               to="/blogs"
             >
               Blog
@@ -92,7 +128,7 @@ export default function Navbar() {
           </NavigationMenuLink>
           <NavigationMenuLink asChild>
             <Link
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 text-md font-semibold   "
               to="/forum"
             >
               Forum
@@ -100,7 +136,7 @@ export default function Navbar() {
           </NavigationMenuLink>
           <NavigationMenuLink asChild>
             <Link
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
+              className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 text-md font-semibold   "
               to="/posts"
             >
               Gönderiler
@@ -109,32 +145,64 @@ export default function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Avatar>
-            <AvatarImage src="https://avatars.githubusercontent.com/u/132236699?v=4" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className={cn("px-5 me-3")}>
-          <DropdownMenuLabel className="flex justify-center items-center">
-            <User /> Hesabım
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profilim</DropdownMenuItem>
-          <DropdownMenuItem>Gönderilerim</DropdownMenuItem>
-          <DropdownMenuItem>Konularım</DropdownMenuItem>
-          <DropdownMenuItem onClick={handleLogout}>Çıkış Yap</DropdownMenuItem>
+      {user ? (
+        <DropdownMenu>
+          <>
+            <DropdownMenuTrigger>
+              <Avatar className="w-10 h-10">
+                {avatar && <AvatarImage src={`${apiUrl}/image/${avatar}`} />}
+                <AvatarFallback>
+                  <CircleUserRound />
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className={cn("px-5 me-3")}>
+              <DropdownMenuLabel className="flex justify-center items-center">
+                <User />
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Profilim
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Gönderilerim
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Konularım
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="hover:cursor-pointer"
+                onClick={handleLogout}
+              >
+                Çıkış Yap
+              </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+              <DropdownMenuSeparator />
 
-          <DropdownMenuItem className={cn("flex justify-between space-x-2")}>
-            <Moon className="hover:bg-slate-100 hover:cursor-pointer rounded-full hover:rotate-45 transition-all" />
-            <LaptopMinimal className="hover:bg-slate-100 hover:cursor-pointer rounded-full" />
-            <Sun className="hover:bg-slate-100 hover:cursor-pointer rounded-full hover:rotate-45 transition-all" />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <DropdownMenuItem
+                className={cn("flex justify-between space-x-2")}
+              >
+                <Moon
+                  onClick={() => setTheme("dark")}
+                  className=" hover:cursor-pointer rounded-full hover:rotate-45 transition-all"
+                />
+                <LaptopMinimal
+                  onClick={() => setTheme("system")}
+                  className=" hover:cursor-pointer rounded-full"
+                />
+                <Sun
+                  onClick={() => setTheme("light")}
+                  className=" hover:cursor-pointer rounded-full hover:rotate-45 transition-all"
+                />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </>
+        </DropdownMenu>
+      ) : (
+        <Link to="/login">
+          <CircleUserRound className="w-10 h-10" />
+        </Link>
+      )}
     </header>
   );
 }
