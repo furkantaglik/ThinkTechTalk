@@ -55,6 +55,7 @@ model Blog {
   id         String    @id @unique @default(cuid())
   title      String
   content    String
+  imagePath  String?
   categoryId String?
   userId     String
   createdAt  DateTime  @default(now())

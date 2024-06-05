@@ -6,6 +6,12 @@ export const BlogSchema = z.object({
     .min(5, "Başlık minimum 5 karakterden oluşabilir")
     .max(50, "Başlık maksimum 50 karakterden  oluşabilir"),
   content: z.string({ required_error: "Alanlar boş geçilemez" }),
+  media: z
+    .object(
+      { destination: z.string() },
+      { required_error: "Medya boş geçilemez" }
+    )
+    .nullable(),
   userId: z.string({ required_error: "Alanlar boş geçilemez" }),
   categoryId: z.string({ required_error: "Alanlar boş geçilemez" }),
 });

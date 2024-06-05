@@ -24,7 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { cn, getToken, handleError } from "@/lib/utils";
-import { useTheme } from "@/context/Themeprovider";
+import { useTheme } from "@/context/ThemeContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { apiUrl } from "@/lib/constants";
@@ -61,7 +61,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="flex justify-between h-20 w-full shrink-0 items-center px-4 md:px-6">
+    <header className="flex justify-between h-20 w-full shrink-0 items-center px-4 md:px-6 border-b mb-10">
       <Sheet>
         <SheetTrigger asChild>
           <Button className="lg:hidden" size="icon" variant="outline">
@@ -83,7 +83,7 @@ export default function Navbar() {
             </Link>
             <Link
               className="flex w-full items-center py-2 text-lg font-semibold"
-              to="/blogs"
+              to="/blog"
             >
               Blog
             </Link>
@@ -121,7 +121,7 @@ export default function Navbar() {
           <NavigationMenuLink asChild>
             <Link
               className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 text-md font-semibold   "
-              to="/blogs"
+              to="/blog"
             >
               Blog
             </Link>
@@ -137,7 +137,7 @@ export default function Navbar() {
           <NavigationMenuLink asChild>
             <Link
               className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 text-md font-semibold   "
-              to="/posts"
+              to="/post"
             >
               Gönderiler
             </Link>

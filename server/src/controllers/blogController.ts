@@ -7,10 +7,12 @@ import db from "../../prisma/prisma";
 export const createBlog: RequestHandler = async (req, res) => {
   try {
     const userId = req.user.id;
+    const image = req.file;
     const { title, content, categoryId } = req.body;
     const blog = BlogSchema.safeParse({
       title,
       content,
+      image,
       userId,
       categoryId,
     });
@@ -26,6 +28,7 @@ export const createBlog: RequestHandler = async (req, res) => {
         title,
         content,
         userId,
+        imagePath: image?.path,
         categoryId,
       },
     });

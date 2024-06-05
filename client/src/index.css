@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #2f2d2d;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: hsl(262, 93%, 16%);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(262, 100%, 34%);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
